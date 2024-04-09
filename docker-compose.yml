@@ -12,7 +12,7 @@ services:
       POSTGRES_USER: vinicius
       POSTGRES_PASSWORD: 123
     ports:
-      - "5432:5432"
+      - "5433:5433"
 
   microservico-estoque:
     build: .
