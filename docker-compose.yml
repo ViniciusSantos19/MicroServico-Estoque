@@ -1,3 +1,5 @@
+
+
 version: '3'
 
 services:
@@ -12,7 +14,7 @@ services:
       POSTGRES_USER: vinicius
       POSTGRES_PASSWORD: 123
     ports:
-      - "5433:5433"
+      - "5433:5432"
 
   microservico-estoque:
     build: .
@@ -29,6 +31,36 @@ services:
       - "3000:3000"
     depends_on:
       - db
+  
+  bd_autenticacao:
+    container_name: bd_autenticacao
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: autenticacao
+      POSTGRES_USER: administrador
+      POSTGRES_PASSWORD: microservAuth2024      
+    volumes:
+       - ./postgres/data:/var/lib/postgresql/data
+    # A porta oficial do Postgres da aplicação Controle de Acesso é 25432
+    ports:
+       - "25432:5432"
+    
+
+  aplicacao_autenticacao:
+    container_name: aplicacao_autenticacao
+    image: lucasviniciuslopez/appautenticacao:latest
+    # A porta oficial da aplicação Controle de Acesso é 28081
+    ports:
+        - "28081:8080"
+        - "5005:5005"
+    environment:
+        DB_SERVER: bd_autenticacao
+        POSTGRES_DB: autenticacao
+        POSTGRES_USER: administrador
+        POSTGRES_PASSWORD: microservAuth2024
+    depends_on:
+        - bd_autenticacao
 
 volumes:
   postgres_data:

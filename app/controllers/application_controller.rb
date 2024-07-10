@@ -11,14 +11,19 @@ class ApplicationController < ActionController::API
 
   def authorize_request
     header = request.headers['Authorization']
-    header = header.split(' ').last if header
-    decoded = decoded_tooken(header)
-    render json: { error: 'unautrhorized request' }, status: :unauthorized unless decoded
+
+    if header && header.split(' ').length == 2
+      token = header.split(' ').last
+      decoded = decoded_token(token)
+      render json: { error: 'unauthorized request' }, status: :unauthorized unless decoded
+    else
+      render json: { error: 'missing or malformed Authorization header' }, status: :unauthorized
+    end
   end
 
-  def decoded_tooken(token)
+  def decoded_token(token)
     jwt_secret = ENV['SECRET_KEY_BASE']
-    JWT.decode(token, jwt_secret, true, algorithm: 'HS512')
+    JWT.decode(token, jwt_secret, true, algorithm: 'HS256')
   rescue JWT::DecodeError
     nil
   end
