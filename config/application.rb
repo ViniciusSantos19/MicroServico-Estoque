@@ -29,6 +29,6 @@ module MicroservicoEstoque
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    Dotenv::Railtie.load if Rails.env.development? || Rails.env.test?
+    Dotenv::Rails.load if %w[development test].include? ENV['RAILS_ENV']
   end
 end
