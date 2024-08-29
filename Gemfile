@@ -42,7 +42,7 @@ gem 'jwt'
 gem 'rack-cors'
 
 # Use gem enable .env file
-gem 'dotenv-rails', groups: %i[development test]
+gem 'dotenv-rails', require: 'dotenv/load', groups: [:development]
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
